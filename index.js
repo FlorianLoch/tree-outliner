@@ -14,10 +14,10 @@ function outline(tree) {
   outlineRec("", tree);
   return out;
 
-  function outlineRec(prefix, node) {
-    if (typeof node === "undefined") return;
+  function outlineRec(prefix, childNodes) {
+    if (typeof childNodes === "undefined" || childNodes.length === 0) return;
 
-    node.forEach(function (item, index) {
+    childNodes.forEach(function (item, index) {
       var symbol = isLast(index) ? CURVE : BRANCH;
       write(prefix + symbol + HPIPE + item.name);
       var newPrefix = prefix + ((isLast(index)) ? " " : VPIPE) + SPACE;
@@ -25,7 +25,7 @@ function outline(tree) {
     });
 
     function isLast(index) {
-      return (index + 1 === node.length);
+      return (index + 1 === childNodes.length);
     }
   }
 
@@ -67,5 +67,44 @@ var tree = [{
   name: "Ain't exist"
 }];
 
+function Node(name) {
+  this.name = name;
+  this.children = [];
+}
+
+Node.prototype.prependChild = function (node) {
+  this.children.unshift(node);
+};
+
+Node.prototype.appendChild = function (node) {
+  this.children.push(node);
+};
+
 var stringifiedTree = outline(tree);
 console.log(stringifiedTree);
+
+////////////////////////////////
+
+var path = require("path");
+var fs = require("fs");
+
+function fileTree(dir) {
+  var node = new Node(dir);
+  fileTreeRec(dir, node);
+
+  function fileTreeRec(dir, node) {
+    var files = fs.readdirSync(dir);
+    files.forEach(function (file, index) {
+      var childNode = new Node(file);
+      var newPath = path.join(dir, file);
+      if (fs.statSync(newPath).isDirectory()) {
+        fileTreeRec(newPath, childNode);
+      }
+      node.appendChild(childNode);
+    });
+  }
+
+  return node;
+}
+
+console.log(outline([fileTree(__dirname)]));
