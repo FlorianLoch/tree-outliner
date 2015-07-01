@@ -1,21 +1,31 @@
-const VPIPE = "│";
-const HPIPE = "─ ";
-const BRANCH = "├";
-const CURVE = "└";
-const SPACE = "   ";
+"use strict";
 
-function outline(tree) {
-  if (!tree) {
+var VPIPE = "│";
+var HPIPE = "─ ";
+var BRANCH = "├";
+var CURVE = "└";
+var SPACE = "   ";
+
+module.exports = {
+  outline: outline,
+  Node: Node
+};
+
+function outline(rootNode) {
+  if (!rootNode) {
     console.log("Tree has no nodes! Not a single one :/");
-    return;
+    return "";
   }
 
   var out = "";
-  outlineRec("", tree);
+  write(rootNode.name);
+  outlineRec("", rootNode.children);
   return out;
 
   function outlineRec(prefix, childNodes) {
-    if (typeof childNodes === "undefined" || childNodes.length === 0) return;
+    if (typeof childNodes === "undefined" || childNodes.length === 0) {
+      return;
+    }
 
     childNodes.forEach(function (item, index) {
       var symbol = isLast(index) ? CURVE : BRANCH;
@@ -34,38 +44,7 @@ function outline(tree) {
   }
 }
 
-var tree = [{
-  name: "root (/)",
-  children: [
-    {
-      name: "home",
-      children: [
-        {
-          name: "florian"
-        },
-        {
-          name: "donald"
-        },
-        {
-          name: "ronald"
-        },
-        {
-          name: "root"
-        }
-      ]
-    },
-    {
-      name: "var",
-      children: [
-        {
-          name: "www"
-        }
-      ]
-    }
-  ]
-}, {
-  name: "Ain't exist"
-}];
+//////// Node constructor /////////
 
 function Node(name) {
   this.name = name;
@@ -73,38 +52,17 @@ function Node(name) {
 }
 
 Node.prototype.prependChild = function (node) {
+  if (typeof node === "string") {
+    node = new Node(node);
+  }
   this.children.unshift(node);
+  return this;
 };
 
 Node.prototype.appendChild = function (node) {
-  this.children.push(node);
-};
-
-var stringifiedTree = outline(tree);
-console.log(stringifiedTree);
-
-////////////////////////////////
-
-var path = require("path");
-var fs = require("fs");
-
-function fileTree(dir) {
-  var node = new Node(dir);
-  fileTreeRec(dir, node);
-
-  function fileTreeRec(dir, node) {
-    var files = fs.readdirSync(dir);
-    files.forEach(function (file, index) {
-      var childNode = new Node(file);
-      var newPath = path.join(dir, file);
-      if (fs.statSync(newPath).isDirectory()) {
-        fileTreeRec(newPath, childNode);
-      }
-      node.appendChild(childNode);
-    });
+  if (typeof node === "string") {
+    node = new Node(node);
   }
-
-  return node;
-}
-
-console.log(outline([fileTree(__dirname)]));
+  this.children.push(node);
+  return this;
+};
