@@ -1,8 +1,12 @@
 {
   "name": "tree-outliner",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple module for stringifying a tree/hash datastructure in a way known from UNIX tool 'tree'",
-  "keywords": ["tree", "outline", "visualization"],
+  "keywords": [
+    "tree",
+    "outline",
+    "visualization"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
