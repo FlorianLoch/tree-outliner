@@ -13,7 +13,7 @@ module.exports = {
 
 function outline(rootNode) {
   if (!rootNode) {
-    console.log("Tree has no nodes! Not a single one :/");
+    // console.log("Tree has no nodes! Not a single one :/");
     return "";
   }
 
