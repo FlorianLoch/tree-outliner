@@ -1,3 +1,5 @@
+// You might need privileges for scanning system directories
+
 "use strict";
 var outline = require(__dirname + "/../index").outline;
 var Node = require(__dirname + "/../index").Node;
@@ -32,4 +34,4 @@ function fileTree(dir, recursionDepth) {
   return node;
 }
 
-console.log(outline(fileTree("/etc", 3)));
+console.log(outline(fileTree("/", 2)));
